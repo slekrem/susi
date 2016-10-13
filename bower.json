@@ -1,0 +1,19 @@
+{
+  "name": "susi",
+  "description": "",
+  "authors": [
+    "Stefan Merkel <merkel.s.ulm@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/stefanmerkel/susi",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.7.0"
+  }
+}
