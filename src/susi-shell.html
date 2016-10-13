@@ -1,4 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="susi-body.html">
 
 <dom-module id="susi-shell">
   <template>
@@ -7,7 +12,19 @@
         display: block;
       }
     </style>
-    susi-shell
+    <app-drawer-layout force-narrow>
+      <app-drawer id="drawer" swipe-open>
+        drawer
+      </app-drawer>
+      <app-header-layout>
+        <app-header>
+          <app-toolbar>
+            <div main-title>SuSi</div>
+          </app-toolbar>
+        </app-header>
+        <susi-body></susi-body>
+      </app-header-layout>
+    </app-drawer-layout>
   </template>
   <script>
     Polymer({

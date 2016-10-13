@@ -14,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.7.0"
+    "polymer": "Polymer/polymer#^1.7.0",
+    "app-layout": "polymerelements/app-layout#^0.10.4"
   }
 }
