@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/stefanmerkel/susi#readme",
   "dependencies": {
-    "feed-read": "0.0.1"
+    "cheerio": "^0.22.0",
+    "feed-read": "0.0.1",
+    "request": "^2.75.0"
   }
 }

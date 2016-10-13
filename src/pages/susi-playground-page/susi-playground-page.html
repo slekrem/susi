@@ -1,0 +1,24 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/object-to-json/object-to-json.html">
+<link rel="import" href="../../elements/get-articles-from-url/get-articles-from-url.html">
+
+<dom-module id="susi-playground-page">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <get-articles-from-url
+      google-url="https://www.google.de/alerts/feeds/04412435237654866870/3289640072419991976"
+      articles="{{_articles}}"></get-articles-from-url>
+    <template is="dom-repeat" items="[[_articles]]">
+      <object-to-json object="[[item]]"></object-to-json>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: "susi-playground-page"
+    });
+  </script>
+</dom-module>

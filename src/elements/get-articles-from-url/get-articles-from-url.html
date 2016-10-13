@@ -6,24 +6,51 @@
     Polymer({
       is: "get-articles-from-url",
       properties: {
-        articlesUrl: {
+        googleUrl: {
           type: String,
-          observer: "_urlChanged"
+          observer: "_googleUrlChanged"
         },
         articles: {
           type: Array,
-          notify: true
+          notify: true,
+          value: []
         }
       },
-      _urlChanged: function(url) {
-        var feedRead = require('feed-read'),
-          _this = this;
-        feedRead(url, (error, articles) => {
+      _googleUrlChanged: function(url) {
+        var _this = this;
+        require('feed-read')(url, function(error, articles) {
           if (error) throw error;
-          _this.articles = articles;
-          console.log(_this.articles);
+          articles.forEach(function(article) {
+            _this._parseGooleLink(article.link, function(error, link) {
+              if (error) throw(error);
+              _this._getArticleItem(link, function(error, article){
+                if (error) throw(error);
+                _this.push("articles", article);
+              });
+            });
+          });
         });
-        console.log("url: " + url);
+      },
+      _parseGooleLink: function(googleArticleLink, callback) {
+        require('request')(googleArticleLink, function(error, response, html) {
+          if (error) callback(error);
+          var cheerio = require('cheerio'),
+            $ = cheerio.load(html),
+            content = $('META').attr('content'),
+            startIndex = content.indexOf("'") + 1,
+            endIndex = content.indexOf("'", startIndex);
+          callback(null, content.substring(startIndex, endIndex));
+        });
+      },
+      _getArticleItem: function(url, callback) {
+        require('html-metadata')(url)
+          .then(function(metadata) {
+            callback(null, {
+              title: metadata.general.title,
+              description: metadata.general.description,
+              url: url
+            });
+          });
       }
     });
   </script>
