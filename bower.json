@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.7.0",
-    "app-layout": "polymerelements/app-layout#^0.10.4"
+    "app-layout": "polymerelements/app-layout#^0.10.4",
+    "object-to-json": "stefanmerkel/object-to-json"
   }
 }

@@ -1,0 +1,30 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="get-articles-from-url">
+  <template></template>
+  <script>
+    Polymer({
+      is: "get-articles-from-url",
+      properties: {
+        articlesUrl: {
+          type: String,
+          observer: "_urlChanged"
+        },
+        articles: {
+          type: Array,
+          notify: true
+        }
+      },
+      _urlChanged: function(url) {
+        var feedRead = require('feed-read'),
+          _this = this;
+        feedRead(url, (error, articles) => {
+          if (error) throw error;
+          _this.articles = articles;
+          console.log(_this.articles);
+        });
+        console.log("url: " + url);
+      }
+    });
+  </script>
+</dom-module>

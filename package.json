@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/stefanmerkel/susi/issues"
   },
-  "homepage": "https://github.com/stefanmerkel/susi#readme"
+  "homepage": "https://github.com/stefanmerkel/susi#readme",
+  "dependencies": {
+    "feed-read": "0.0.1"
+  }
 }
