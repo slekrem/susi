@@ -1,0 +1,191 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../elements/get-articles-from-url/get-articles-from-url.html">
+<link rel="import" href="../../elements/delete-firebase-document/delete-firebase-document.html">
+<link rel="import" href="../../elements/add-firebase-document/add-firebase-document.html">
+<link rel="import" href="../../elements/feed-item/feed-item.html">
+<link rel="import" href="../../susi-style.html">
+<link rel="import" href="../../susi-icons.html">
+
+<dom-module id="des-page">
+  <template>
+    <style include="susi-style">
+      feed-item {
+        background-color: red;
+        margin: 0 0 10px 0;
+      }
+    </style>
+    <!-- firebase -->
+    <firebase-app name="[[_firebaseAppName]]"
+      auth-domain="das-elektro-skateboard.firebaseapp.com"
+      database-url="https://das-elektro-skateboard.firebaseio.com"
+      api-key="AIzaSyAW_BL-9_ScCQ1oZHu6ctiQKEJ2RtqlCPk"></firebase-app>
+    <firebase-auth app-name="[[_firebaseAppName]]"></firebase-auth>
+    <firebase-query app-name="[[_firebaseAppName]]"
+      path="feed"
+      data="{{_feedData}}"></firebase-query>
+    <firebase-query app-name="[[_firebaseAppName]]"
+      path="alerts"
+      data="{{_alertsData}}"></firebase-query>
+    <delete-firebase-document app-name="[[_firebaseAppName]]"
+      path="[[_deleteFirebaseDocumentPath]]"
+      key="[[_deleteFirebaseDocumentKey]]"></delete-firebase-document>
+    <add-firebase-document app-name="[[_firebaseAppName]]"
+      path="[[_addFirebaseDocumentPath]]"
+      data="[[_addFirebaseDocumentData]]"
+      on-reset="_handleAddFirebaseDocumentReset"></add-firebase-document>
+    <!-- login -->
+    <section>
+      <article>
+        <hr />
+        <h2>Login</h2>
+        <paper-card>
+          <div class="card-content">
+            <paper-input label="E-Mail-Adresse" type="email"></paper-input>
+            <paper-input label="Passwort" type="password"></paper-input>
+            <paper-button>Login</paper-button>
+          </div>
+        </paper-card>
+      </article>
+    </section>
+    <!-- alerts -->
+    <section>
+      <paper-card heading="Alerts">
+        <div class="card-content">
+          <template is="dom-repeat" items="[[_alertsData]]">
+            <paper-item>
+              <paper-item-body two-line>
+                <div>[[item.name]]</div>
+                <div secondary>[[item.url]]</div>
+              </paper-item-body>
+              <paper-icon-button icon="delete"
+                id="[[item.$key]]"
+                on-tap="_deleteAlert">
+              </paper-icon-button>
+              <paper-icon-button icon="launch"></paper-icon-button>
+            </paper-item>
+          </template>
+        </div>
+        <div class="card-content">
+          <paper-input label="Name"
+            value="{{_newAlertName}}"></paper-input>
+          <paper-input label="Url"
+            value="{{_newAlertUrl}}"></paper-input>
+        </div>
+        <div class="card-actions">
+          <paper-button on-tap="_handleCreateAlertTap">Erstellen</paper-button>
+        </div>
+      </paper-card>
+    </section>
+    <!-- des-feed -->
+    <section>
+      <article>
+        <hr />
+        <h2>Feed</h2>
+        <p>Der aktuelle Feed</p>
+      </article>
+      <template is="dom-repeat"
+        items="[[_feedData]]"
+        sort="_sortFeedByDate">
+        <feed-item
+          item="[[item]]"
+          has-delete-button
+          on-delete-tap="_handleDeleteFeedItemTap"
+          on-launch-tap="_handleFeedItemLaunchTap"></feed-item>
+      </template>
+    </section>
+    <!-- new data -->
+    <section>
+      <hr />
+      <h2>Neue Daten</h2>
+      <template is="dom-repeat" items="[[_alertsData]]" as ="_alert">
+        <get-articles-from-url
+          google-url="[[_alert.url]]"
+          articles="{{_articles}}"></get-articles-from-url>
+      </template>
+      <template is="dom-repeat" items="[[_articles]]">
+        <feed-item
+          item="[[item]]"
+          on-launch-tap="_handleFeedItemLaunchTap"
+          has-add-button$="[[_computeAddbuttonForFeedItem(item)]]"
+          on-add-tap="_handleFeedItemAddTap"></feed-item>
+      </template>
+    </section>
+  </template>
+  <script>
+    Polymer({
+      is: "des-page",
+      properties: {
+        _firebaseAppName: {
+          type: String,
+          value: "des-app"
+        },
+        _deleteFirebaseDocumentPath: {
+          type: String
+        },
+        _deleteFirebaseDocumentKey: {
+          type: String
+        }
+      },
+      _handleCreateAlertTap: function() {
+        var firebaseDocument = document.createElement("firebase-document"),
+          _this = this;
+        firebaseDocument.appName = this._firebaseAppName;
+        firebaseDocument.data = {
+          name: this._newAlertName,
+          url: this._newAlertUrl
+        };
+        firebaseDocument
+          .save("alerts")
+          .then(function() {
+            _this._newAlertName = "";
+            _this._newAlertUrl = "";
+          })
+          .catch(function(error) {
+            console.log("catch: " + error);
+          });
+      },
+      _deleteAlert: function(event) {
+        this._deleteFirebaseDocumentPath = "alerts/"
+        this._deleteFirebaseDocumentKey = event.target.getAttribute('id');
+      },
+      _handleDeleteFeedItemTap: function(event) {
+        this._deleteFirebaseDocumentPath = "feed/";
+        this._deleteFirebaseDocumentKey = event.detail.$key;
+      },
+      _handleFeedItemAddTap: function(event) {
+        this._addFirebaseDocumentPath = "feed/";
+        this._addFirebaseDocumentData = event.detail;
+      },
+      _openAlert: function(event) {
+        const {shell} = require('electron');
+        shell.openExternal(event.target.getAttribute('id'));
+      },
+      _handleFeedItemLaunchTap: function(event) {
+        const {shell} = require('electron');
+        shell.openExternal(event.detail.url);
+      },
+      _handleAddFirebaseDocumentReset: function() {
+        this._addFirebaseDocumentPath = undefined;
+        this._addFirebaseDocumentData = undefined;
+      },
+      _computeAddbuttonForFeedItem(item) {
+        for (var index = 0; index < this._feedData.length; ++index) {
+          if (this._feedData[index].url === item.url) return false;
+        }
+        return true;
+      },
+      _sortFeedByDate: function(firstDate, secondDate) {
+        return new Date(firstDate) - new Date(secondDate);
+      }
+    });
+  </script>
+</dom-module>

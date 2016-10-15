@@ -1,0 +1,17 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="console-log">
+  <template></template>
+  <script>
+    Polymer({
+      is: "console-log",
+      properties: {
+        value: {
+          type: Object,
+          observer: "_valueCanged"
+        }
+      },
+      _valueCanged: function(value) { console.log(value); }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,38 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-document.html">
+
+<dom-module id="delete-firebase-document">
+  <template>
+    <firebase-document
+      id="firebaseDocument"
+      app-name="[[appName]]"></firebase-document>
+  </template>
+  <script>
+    Polymer({
+      is: "delete-firebase-document",
+      properties: {
+        appName: {
+          type: String
+        },
+        path: {
+          type: String
+        },
+        key: {
+          type: String,
+          observer: "_keyChanged"
+        }
+      },
+      _keyChanged: function(key) {
+        if (this.path && key) {
+          var _this = this;
+          this.$.firebaseDocument
+            .save(this.path, key)
+            .then(function() {
+              _this.$.firebaseDocument.reset();
+              _this.fire("reset");
+            });
+        }
+      }
+    });
+  </script>
+</dom-module>

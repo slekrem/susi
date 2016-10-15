@@ -1,0 +1,39 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymerfire/firebase-document.html">
+
+<dom-module id="add-firebase-document">
+  <template>
+    <firebase-document
+      id="firebaseDocument"
+      app-name="[[appName]]"
+      data="[[data]]"></firebase-document>
+  </template>
+  <script>
+    Polymer({
+      is: "add-firebase-document",
+      properties: {
+        appName: {
+          type: String
+        },
+        path: {
+          type: String
+        },
+        data: {
+          type: Object,
+          observer: "_dataChanged"
+        }
+      },
+      _dataChanged: function() {
+        if (this.path && this.data) {
+          var _this = this;
+          this.$.firebaseDocument
+            .save(this.path)
+            .then(function() {
+              _this.$.firebaseDocument.reset();
+              _this.fire("reset");
+            });
+        }
+      }
+    });
+  </script>
+</dom-module>

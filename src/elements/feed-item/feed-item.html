@@ -1,0 +1,74 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../susi-icons.html">
+
+<dom-module id="feed-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-card {
+        width: 100%;
+      }
+    </style>
+    <paper-card
+      heading="[[item.title]]">
+      <div class="card-content">
+        [[_computeDate(item.date)]]
+      </div>
+      <div class="card-content">
+        [[item.description]]
+      </div>
+      <div class="card-actions">
+        <paper-icon-button
+          icon="launch"
+          on-tap="_handleLaunchTap"></paper-icon-button>
+        <template is="dom-if" if="[[hasAddButton]]">
+          <paper-icon-button
+            icon="add"
+            on-tap="_handleAddTap"></paper-icon-button>
+        </template>
+        <template is="dom-if" if="[[hasDeleteButton]]">
+          <paper-icon-button
+            icon="delete"
+            on-tap="_handleDeleteTap"></paper-icon-button>
+        </template>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: "feed-item",
+      properties: {
+        item: {
+          type: Object
+        },
+        hasAddButton: {
+          type: Boolean
+        },
+        hasDeleteButton: {
+          type: Boolean
+        }
+      },
+      _handleLaunchTap: function() {
+        this.fire("launch-tap", this.item);
+      },
+      _handleAddTap: function() {
+        this.fire("add-tap", this.item);
+      },
+      _handleDeleteTap: function() {
+        this.fire("delete-tap", this.item);
+      },
+      _computeDate: function(date) {
+        date = new Date(date);
+        return date.getDate() + "." +
+          (date.getMonth() + 1) + "." +
+          date.getFullYear() + " " +
+          date.getHours() + ":" +
+          date.getMinutes();
+      }
+    });
+  </script>
+</dom-module>

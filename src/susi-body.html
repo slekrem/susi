@@ -1,14 +1,62 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="./pages/susi-playground-page/susi-playground-page.html">
+<link rel="import" href="pages/des-page/des-page.html">
 
 <dom-module id="susi-body">
   <template>
     <style>
       :host {
         display: block;
+        margin: auto;
+      }
+      @media (max-width: 480px) {
+        :host {
+          width: 100%;
+        }
+      }
+
+      @media (min-width: 480px) {
+        :host {
+          width: 480px;
+        }
+      }
+
+      @media (min-width: 600px) {
+        :host {
+          width: 600px;
+        }
+      }
+
+      @media (min-width: 840px) {
+        :host {
+          width: 840px;
+        }
+      }
+
+      @media (min-width: 960px) {
+        :host {
+          width: 960px;
+        }
+      }
+
+      @media (min-width: 1280px) {
+        :host {
+          width: 1280px;
+        }
+      }
+
+      @media (min-width: 1440px) {
+        :host {
+          width: 1440px;
+        }
+      }
+
+      @media (min-width: 1600px) {
+        :host {
+          width: 1600px;
+        }
       }
     </style>
-    <susi-playground-page></susi-playground-page>
+    <des-page></des-page>
   </template>
   <script>
     Polymer({

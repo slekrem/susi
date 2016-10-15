@@ -48,7 +48,8 @@
             callback(null, {
               title: metadata.general.title,
               description: metadata.general.description,
-              url: url
+              url: url,
+              date: new Date().toString()
             });
           });
       }
